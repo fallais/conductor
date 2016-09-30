@@ -53,7 +53,7 @@ func (ctrl *ScenarioController) Get(c web.C, w http.ResponseWriter, r *http.Requ
 	// Play all scenarii
 	for key, scenario := range shared.Scenarii {
 		logrus.Infoln("Playing the scenario :", key)
-		for key, step := range scenario {
+		for key, step := range scenario.Steps {
 			logrus.Infoln("Playing the step :", key)
 			err := playStep(step)
 			if err != nil {

@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -30,7 +31,7 @@ func JSONResponse(w http.ResponseWriter, status int, data interface{}) {
 	result, err := json.Marshal(data)
 	if err != nil {
 		// Set the result to the default value to prevent empty responses
-		result = []byte(`{"status":500,"message":"Error occured while marshalling the response body"}`)
+		result = []byte(fmt.Sprintf(`{"status":500,"message":"Error occured while marshalling the response body : %s"}`, err))
 	}
 
 	// Set the response's content type to JSON

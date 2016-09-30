@@ -15,17 +15,18 @@ import (
 
 func main() {
 	// Read the config file
-	data, err := ioutil.ReadFile("configuration.yml")
+	scenarii, err := ioutil.ReadFile("scenarii.yml")
 	if err != nil {
 		logrus.Fatalln(err)
 	}
 
 	// Unmarshal the configuration file
-	err = yaml.Unmarshal(data, &shared.Scenarii)
+	err = yaml.Unmarshal(scenarii, &shared.Scenarii)
 	if err != nil {
 		logrus.Fatalln("error: %v", err)
 	}
 
+	// Controllers
 	scenarioCtrl := routes.NewScenarioController()
 
 	// Routes for API
@@ -33,7 +34,7 @@ func main() {
 	goji.Get("/api/v1/scenario/:id", scenarioCtrl.Get)
 	goji.Get("/api/v1/scenario", scenarioCtrl.List)
 
+	// Set the Goji server
 	flag.Set("bind", ":5000")
 	goji.Serve()
-
 }
