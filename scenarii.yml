@@ -1,0 +1,38 @@
+scenario.1:
+  id: 1
+  name: Mail Flood
+  steps:
+    step1:
+      device: proxy
+      events: 20
+      identifier: 192.168.6.30
+      src: 10.10.10.10
+      dst: 10.10.10.10
+      users:
+        - John
+        - Maria
+    step2:
+      device: switch
+      events: 10
+      identifier: 192.168.100.10
+      src: 10.10.10.10
+      dst: 10.10.10.10
+scenario.2:
+  id: 2
+  name: Massive Upload
+  steps:
+    step1:
+      device: proxy
+      events: 20
+      identifier: 192.168.6.30
+      src: 10.10.10.10
+      dst: 10.10.10.10
+      users:
+        - John
+        - Maria
+    step2:
+      device: switch
+      events: 10
+      identifier: 192.168.100.10
+      src: 10.10.10.10
+      dst: 10.10.10.10
