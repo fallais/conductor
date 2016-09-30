@@ -1,0 +1,32 @@
+flood:
+  step1:
+    device: proxy
+    events: 20
+    identifier: 192.168.6.30
+    src: 10.10.10.10
+    dst: 10.10.10.10
+    users:
+      - John
+      - Maria
+  step2:
+    device: switch
+    events: 10
+    identifier: 192.168.100.10
+    src: 10.10.10.10
+    dst: 10.10.10.10
+theft:
+  step1:
+    device: proxy
+    events: 20
+    identifier: 192.168.6.30
+    src: 10.10.10.10
+    dst: 10.10.10.10
+    users:
+      - John
+      - Maria
+  step2:
+    device: switch
+    events: 10
+    identifier: 192.168.100.10
+    src: 10.10.10.10
+    dst: 10.10.10.10
