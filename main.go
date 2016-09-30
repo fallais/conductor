@@ -20,7 +20,7 @@ func main() {
 
 	// Send the logs
 	for i := 0; i < 200; i++ {
-		conn.Write([]byte("Sep 18 10:28:52 192.168.6.10 [programname][20310]: Log message "))
+		conn.Write([]byte("Sep 18 10:28:52 192.168.6.30 [programname][20310]: Log message "))
 	}
 
 }
