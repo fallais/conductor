@@ -1,4 +1,4 @@
-flood:
+mailFlood:
   step1:
     device: proxy
     events: 20
@@ -14,7 +14,7 @@ flood:
     identifier: 192.168.100.10
     src: 10.10.10.10
     dst: 10.10.10.10
-theft:
+massiveUpload:
   step1:
     device: proxy
     events: 20
