@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"math/rand"
 	"net"
 	"net/http"
@@ -82,7 +83,7 @@ func playStep(step shared.Step) error {
 	// Prepare the Payload
 	payload := step.Events.Payload
 	for key, value := range step.Events.Values {
-		payload = strings.Replace(payload, key, value[rand.Intn(len(value))], -1)
+		payload = strings.Replace(payload, fmt.Sprintf("{{%s}}", key), value[rand.Intn(len(value))], -1)
 	}
 
 	// Send the logs
