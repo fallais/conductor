@@ -59,7 +59,7 @@ func (ctrl *ScenarioController) Get(c web.C, w http.ResponseWriter, r *http.Requ
 			logrus.Infoln("Playing the step :", key)
 			err := playStep(step)
 			if err != nil {
-				logrus.Errorln("error: %v", err)
+				logrus.Errorln("Error:", err)
 			}
 		}
 	}
@@ -70,8 +70,14 @@ func (ctrl *ScenarioController) Get(c web.C, w http.ResponseWriter, r *http.Requ
 
 func playStep(step shared.Step) error {
 	// Prepare addresses
-	siemAddr, err := net.ResolveUDPAddr("udp", "192.168.7.10:514")
-	senderAddr, err := net.ResolveUDPAddr("udp", step.Events.LogSourceIP)
+	siemAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:514")
+	 if err != nil {
+                return err
+        }
+	senderAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:50000", step.Events.LogSourceIP))
+	if err != nil {
+                return err
+       }
 
 	// Open the connection
 	conn, err := net.DialUDP("udp", senderAddr, siemAddr)
