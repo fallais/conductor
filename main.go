@@ -35,6 +35,6 @@ func main() {
 	goji.Get("/api/v1/scenario", scenarioCtrl.List)
 
 	// Set the Goji server
-	flag.Set("bind", ":5000")
+	flag.Set("bind", ":5001")
 	goji.Serve()
 }

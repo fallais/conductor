@@ -5,7 +5,7 @@ scenario.1:
     step.1:
       name: Flood Mail
       events:
-        nb: 200
+        nb: 5
         log_source_ip: 172.16.2.13
         payload: "<22>Sep 28 10:26:17 zentyal postfix/smtpd[7719]: NOQUEUE: reject: RCPT from unknown[172.16.2.13]: 550 5.1.1 <%%dst_user%%>: Recipient address rejected: User unknown in virtual mailbox table; from=<%%src_user%%> to=<%%dst_user%%> proto=ESMTP helo=<mail.open-relay.net>"
         behavior: regular
@@ -22,13 +22,27 @@ scenario.1:
     step.2:
       name: Internet Surfing
       events:
-        nb: 200
+        nb: 3
         log_source_ip: 192.168.6.30
-        payload: "%%src%% - - [05/Oct/2016:12:45:21 +0000] "GET %%domain%% HTTP/1.1" 200 137 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36" TCP_MISS:HIER_DIRECT"
+        payload: '%%src%% - - [05/Oct/2016:12:45:21 +0000] "GET %%domain%% HTTP/1.1" 200 137 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36" TCP_MISS:HIER_DIRECT'
         behavior: regular
         values:
           src:
-            - 192.168.6.30
+            - 192.168.8.18
+          domain:
+            - www.google.com
+            - www.amazon.com
+            - www.facebook.com
+    step.3:
+      name: Internet Surfing
+      events:
+        nb: 3
+        log_source_ip: 192.168.6.30
+        payload: '%%src%% - - [05/Oct/2016:12:45:21 +0000] "GET %%domain%% HTTP/1.1" 200 137 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36" TCP_MISS:HIER_DIRECT'
+        behavior: regular
+        values:
+          src:
+            - 192.168.8.19
           domain:
             - www.google.com
             - www.amazon.com
