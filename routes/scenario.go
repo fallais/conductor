@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"fmt"
+	"math/rand"
 	"net"
 	"net/http"
+	"strings"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/zenazn/goji/web"
@@ -69,7 +70,7 @@ func (ctrl *ScenarioController) Get(c web.C, w http.ResponseWriter, r *http.Requ
 func playStep(step shared.Step) error {
 	// Prepare addresses
 	siemAddr, err := net.ResolveUDPAddr("udp", "192.168.7.10:514")
-	senderAddr, err := net.ResolveUDPAddr("udp", step.Identifer)
+	senderAddr, err := net.ResolveUDPAddr("udp", step.Events.LogSourceIP)
 
 	// Open the connection
 	conn, err := net.DialUDP("udp", senderAddr, siemAddr)
@@ -78,9 +79,15 @@ func playStep(step shared.Step) error {
 	}
 	defer conn.Close()
 
+	// Prepare the Payload
+	payload := step.Events.Payload
+	for key, value := range step.Events.Values {
+		payload = strings.Replace(payload, key, value[rand.Intn(len(value))], -1)
+	}
+
 	// Send the logs
-	for i := 0; i < step.Events; i++ {
-		conn.Write([]byte(fmt.Sprintf("Sep 18 10:28:52 %s [job][20310]: Log message", step.Identifer)))
+	for i := 0; i < step.Events.Nb; i++ {
+		conn.Write([]byte(step.Events.Payload))
 	}
 
 	return nil

@@ -23,7 +23,7 @@ func main() {
 	// Unmarshal the configuration file
 	err = yaml.Unmarshal(scenarii, &shared.Scenarii)
 	if err != nil {
-		logrus.Fatalln("error: %v", err)
+		logrus.Fatalln("Error while unmarshalling the scenarii: %v", err)
 	}
 
 	// Controllers

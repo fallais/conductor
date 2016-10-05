@@ -1,13 +1,18 @@
 package shared
 
+// Events ...
+type Events struct {
+	Nb          int                 `yaml:"nb" json:"nb"`
+	LogSourceIP string              `yaml:"log_source_ip" json:"log_source_ip"`
+	Payload     string              `yaml:"payload" json:"payload"`
+	Behavior    string              `yaml:"behavior" json:"behavior"`
+	Values      map[string][]string `yaml:"values" json:"values"`
+}
+
 // Step ...
 type Step struct {
-	Device    string   `yaml:"device" json:"device"`
-	Events    int      `yaml:"events" json:"events"`
-	Identifer string   `yaml:"identifier" json:"identifier"`
-	Src       string   `yaml:"src" json:"src"`
-	Dst       string   `yaml:"dst" json:"dst"`
-	Users     []string `yaml:"users" json:"users"`
+	Name   string `yaml:"name" json:"name"`
+	Events Events `yaml:"events" json:"events"`
 }
 
 // Scenario ..
