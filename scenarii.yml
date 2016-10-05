@@ -24,7 +24,7 @@ scenario.1:
       events:
         nb: 3
         log_source_ip: 192.168.6.30
-        payload: '{{src}} - - [05/Oct/2016:12:45:21 +0000] "GET %%domain%% HTTP/1.1" 200 137 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36" TCP_MISS:HIER_DIRECT'
+        payload: '10.223.172.50 - - [05/Oct/2016:13:47:30 +0000] "GET http://192.168.6.20/centreon/include/monitoring/status/Services/xml/serviceXML.php? HTTP/1.1" 200 32158 "http://192.168.6.20/centreon/main.php?p=202" "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36" TCP_MISS:HIER_DIRECT'
         behavior: regular
         values:
           src:
