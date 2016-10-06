@@ -93,9 +93,19 @@ func playStep(step shared.Step) error {
 	tcp := layers.TCP{
 		SrcPort: layers.TCPPort(50000),
 		DstPort: layers.TCPPort(514),
-		Seq:     1105024978,
-		SYN:     true,
-		Window: 14600,
+		Window:  1505,
+		Urgent:  0,
+		Seq:     11050,
+		Ack:     0,
+		ACK:     false,
+		SYN:     false,
+		FIN:     false,
+		RST:     false,
+		URG:     false,
+		ECE:     false,
+		CWR:     false,
+		NS:      false,
+		PSH: false,
 	}
 
 	// Options
