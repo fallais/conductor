@@ -91,8 +91,8 @@ func playStep(step shared.Step) error {
 
 	// UDP
 	udpLayer := layers.UDP{
-		SrcPort: layers.UDPPort(666),
-		DstPort: layers.UDPPort(22),
+		SrcPort: layers.UDPPort(50000),
+		DstPort: layers.UDPPort(514),
 	}
 
 	// Options
