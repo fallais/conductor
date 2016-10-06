@@ -86,13 +86,26 @@ func playStep(step shared.Step) error {
 		DstIP:    dstIP.To4(),
 		Version:  4,
 		TTL:      64,
-		Protocol: layers.IPProtocolUDP,
+		Protocol: layers.IPProtocolTCP,
 	}
 
 	// UDP
-	udpLayer := layers.UDP{
-		SrcPort: layers.UDPPort(50000),
-		DstPort: layers.UDPPort(514),
+	tcp := layers.TCP{
+		SrcPort: layers.TCPPort(50000),
+		DstPort: layers.TCPPort(514),
+		Window:  1505,
+		Urgent:  0,
+		Seq:     11050,
+		Ack:     0,
+		ACK:     false,
+		SYN:     false,
+		FIN:     false,
+		RST:     false,
+		URG:     false,
+		ECE:     false,
+		CWR:     false,
+		NS:      false,
+		PSH:     false,
 	}
 
 	// Options
@@ -102,12 +115,12 @@ func playStep(step shared.Step) error {
 	}
 
 	// Checksum
-	udpLayer.SetNetworkLayerForChecksum(&ip)
+	tcp.SetNetworkLayerForChecksum(&ip)
 
 	// Buffer
 	buf := gopacket.NewSerializeBuffer()
 
-	err := gopacket.SerializeLayers(buf, opts, &ip, &udpLayer)
+	err := gopacket.SerializeLayers(buf, opts, &ip, &tcp)
 	if err != nil {
 		logrus.Fatalln(err)
 	}
@@ -129,7 +142,7 @@ func playStep(step shared.Step) error {
 	}
 
 	tcpPayloadBuf := gopacket.NewSerializeBuffer()
-	err = gopacket.SerializeLayers(tcpPayloadBuf, opts, &udpLayer, gopacket.Payload([]byte(payload)))
+	err = gopacket.SerializeLayers(tcpPayloadBuf, opts, &tcp, gopacket.Payload([]byte(payload)))
 	if err != nil {
 		logrus.Fatalln(err)
 	}
@@ -147,7 +160,7 @@ func playStep(step shared.Step) error {
 	}
 
 	err = rawConn.WriteTo(ipHeader, tcpPayloadBuf.Bytes(), nil)
-	logrus.Infoln("packet of length %d sent!\n", (len(tcpPayloadBuf.Bytes()) + len(ipHeaderBuf.Bytes())))
+	logrus.Infoln(fmt.Sprintf("packet of length %d sent!\n", (len(tcpPayloadBuf.Bytes()) + len(ipHeaderBuf.Bytes()))))
 
 	return nil
 }
