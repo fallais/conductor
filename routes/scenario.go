@@ -7,6 +7,11 @@ import (
 	"net/http"
 	"strings"
 
+	"golang.org/x/net/ipv4"
+
+	"github.com/google/gopacket"
+	"github.com/google/gopacket/layers"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/zenazn/goji/web"
 
@@ -69,22 +74,53 @@ func (ctrl *ScenarioController) Get(c web.C, w http.ResponseWriter, r *http.Requ
 }
 
 func playStep(step shared.Step) error {
-	// Prepare addresses
-	siemAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:514")
-	 if err != nil {
-                return err
-        }
-	senderAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:50000", step.Events.LogSourceIP))
-	if err != nil {
-                return err
-       }
+	// Source
+	srcIP := net.ParseIP(step.Events.LogSourceIP)
 
-	// Open the connection
-	conn, err := net.DialUDP("udp", senderAddr, siemAddr)
-	if err != nil {
-		return err
+	// Destination
+	dstIP := net.ParseIP("192.168.7.10")
+
+	// IP
+	ip := layers.IPv4{
+		SrcIP:    srcIP.To4(),
+		DstIP:    dstIP.To4(),
+		Version:  4,
+		TTL:      64,
+		Protocol: layers.IPProtocolUDP,
 	}
-	defer conn.Close()
+
+	// UDP
+	udpLayer := layers.UDP{
+		SrcPort: layers.UDPPort(666),
+		DstPort: layers.UDPPort(22),
+	}
+
+	// Options
+	opts := gopacket.SerializeOptions{
+		FixLengths:       true,
+		ComputeChecksums: true,
+	}
+
+	// Checksum
+	udpLayer.SetNetworkLayerForChecksum(&ip)
+
+	// Buffer
+	buf := gopacket.NewSerializeBuffer()
+
+	err := gopacket.SerializeLayers(buf, opts, &ip, &udpLayer)
+	if err != nil {
+		logrus.Fatalln(err)
+	}
+
+	ipHeaderBuf := gopacket.NewSerializeBuffer()
+	err = ip.SerializeTo(ipHeaderBuf, opts)
+	if err != nil {
+		logrus.Fatalln(err)
+	}
+	ipHeader, err := ipv4.ParseHeader(ipHeaderBuf.Bytes())
+	if err != nil {
+		logrus.Fatalln(err)
+	}
 
 	// Prepare the Payload
 	payload := step.Events.Payload
@@ -92,10 +128,26 @@ func playStep(step shared.Step) error {
 		payload = strings.Replace(payload, fmt.Sprintf("{{%s}}", key), value[rand.Intn(len(value))], -1)
 	}
 
-	// Send the logs
-	for i := 0; i < step.Events.Nb; i++ {
-		conn.Write([]byte(step.Events.Payload))
+	tcpPayloadBuf := gopacket.NewSerializeBuffer()
+	err = gopacket.SerializeLayers(tcpPayloadBuf, opts, &udpLayer, gopacket.Payload([]byte(payload)))
+	if err != nil {
+		logrus.Fatalln(err)
 	}
+
+	// Send the log
+	var packetConn net.PacketConn
+	var rawConn *ipv4.RawConn
+	packetConn, err = net.ListenPacket("ip4:tcp", "127.0.0.1")
+	if err != nil {
+		panic(err)
+	}
+	rawConn, err = ipv4.NewRawConn(packetConn)
+	if err != nil {
+		panic(err)
+	}
+
+	err = rawConn.WriteTo(ipHeader, tcpPayloadBuf.Bytes(), nil)
+	logrus.Infoln("packet of length %d sent!\n", (len(tcpPayloadBuf.Bytes()) + len(ipHeaderBuf.Bytes())))
 
 	return nil
 }
