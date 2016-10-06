@@ -64,7 +64,7 @@ func (ctrl *ScenarioController) Get(c web.C, w http.ResponseWriter, r *http.Requ
 			logrus.Infoln("Playing the step :", key)
 			err := playStep(step)
 			if err != nil {
-				logrus.Errorln("Error:", err)
+				logrus.Fatalln("Error:", err)
 			}
 		}
 	}
@@ -112,17 +112,17 @@ func playStep(step shared.Step) error {
 
 	err := gopacket.SerializeLayers(buf, opts, &ip, &tcp)
 	if err != nil {
-		logrus.Fatalln(err)
+		return err
 	}
 
 	ipHeaderBuf := gopacket.NewSerializeBuffer()
 	err = ip.SerializeTo(ipHeaderBuf, opts)
 	if err != nil {
-		logrus.Fatalln(err)
+		return err
 	}
 	ipHeader, err := ipv4.ParseHeader(ipHeaderBuf.Bytes())
 	if err != nil {
-		logrus.Fatalln(err)
+		return err
 	}
 
 	// Prepare the Payload
@@ -131,22 +131,24 @@ func playStep(step shared.Step) error {
 		payload = strings.Replace(payload, fmt.Sprintf("{{%s}}", key), value[rand.Intn(len(value))], -1)
 	}
 
+	logrus.Infoln(payload)
+
 	tcpPayloadBuf := gopacket.NewSerializeBuffer()
 	err = gopacket.SerializeLayers(tcpPayloadBuf, opts, &tcp, gopacket.Payload([]byte(payload)))
 	if err != nil {
-		logrus.Fatalln(err)
+		return err
 	}
 
 	// Send the log
 	var packetConn net.PacketConn
 	var rawConn *ipv4.RawConn
-	packetConn, err = net.ListenPacket("ip4:tcp", "127.0.0.1")
+	packetConn, err = net.ListenPacket("ip4:tcp", "0.0.0.0")
 	if err != nil {
-		panic(err)
+		return err
 	}
 	rawConn, err = ipv4.NewRawConn(packetConn)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	err = rawConn.WriteTo(ipHeader, tcpPayloadBuf.Bytes(), nil)
