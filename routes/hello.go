@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	"watcher-api/utils"
+	"orchestrator/utils"
 )
 
 //------------------------------------------------------------------------------

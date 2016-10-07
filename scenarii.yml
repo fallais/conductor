@@ -5,7 +5,7 @@ scenario.1:
     step.1:
       name: Flood Mail
       events:
-        nb: 5
+        nb: 30
         log_source_ip: 172.16.2.13
         payload: "<22>Sep 28 10:26:17 zentyal postfix/smtpd[7719]: NOQUEUE: reject: RCPT from unknown[172.16.2.13]: 550 5.1.1 <{{dst_user}}>: Recipient address rejected: User unknown in virtual mailbox table; from=<{{src_user}}> to=<{{dst_user}}> proto=ESMTP helo=<mail.open-relay.net>"
         behavior: regular

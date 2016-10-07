@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"io/ioutil"
+	"time"
 
 	"orchestrator/routes"
 	"orchestrator/shared"
@@ -14,9 +15,17 @@ import (
 	"github.com/zenazn/goji"
 )
 
+var configurationFile = flag.String("c", "scenarii.yml", "Specify the location of the configuration file")
+
 func main() {
+	// Set localtime to UTC
+	time.Local = time.UTC
+
+	// Parse the flags
+	flag.Parse()
+
 	// Read the config file
-	scenarii, err := ioutil.ReadFile("scenarii.yml")
+	scenarii, err := ioutil.ReadFile(*configurationFile)
 	if err != nil {
 		logrus.Fatalln(err)
 	}
