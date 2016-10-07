@@ -47,3 +47,19 @@ scenario.1:
             - www.google.com
             - www.amazon.com
             - www.facebook.com
+scenario.2:
+  id: 2
+  name: Perdu
+  steps:
+    step.1:
+      name: Visit perdu.com
+      events:
+        nb: 1
+        log_source_ip: 192.168.6.30
+        payload: '{{src}} - - [05/Oct/2016:12:45:21 +0000] "GET {{domain}} HTTP/1.1" 200 137 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36" TCP_MISS:HIER_DIRECT'
+        behavior: regular
+        values:
+          src:
+            - 10.223.172.50
+          domain:
+            - www.perdu.com
