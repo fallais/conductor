@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"golang.org/x/net/ipv4"
@@ -57,14 +58,22 @@ func (ctrl *ScenarioController) List(c web.C, w http.ResponseWriter, r *http.Req
 
 // Get a Message
 func (ctrl *ScenarioController) Get(c web.C, w http.ResponseWriter, r *http.Request) {
+	// Retrieve the ID
+	id, err := strconv.Atoi(c.URLParams["id"])
+	if err != nil {
+		logrus.Errorln("Error:", err)
+	}
+
 	// Play all scenarii
 	for key, scenario := range shared.Scenarii {
-		logrus.Infoln("Playing the scenario :", key)
-		for key, step := range scenario.Steps {
-			logrus.Infoln("Playing the step :", key)
-			err := playStep(step)
-			if err != nil {
-				logrus.Fatalln("Error:", err)
+		if scenario.ID == id {
+			logrus.Infoln("Playing the scenario :", key)
+			for key, step := range scenario.Steps {
+				logrus.Infoln("Playing the step :", key)
+				err := playStep(step)
+				if err != nil {
+					logrus.Fatalln("Error:", err)
+				}
 			}
 		}
 	}
