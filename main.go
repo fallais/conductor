@@ -10,6 +10,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/rs/cors"
 	"github.com/zenazn/goji"
 )
 
@@ -28,6 +29,10 @@ func main() {
 
 	// Controllers
 	scenarioCtrl := routes.NewScenarioController()
+
+	// CORS Handler
+	corsHandler := cors.New(cors.Options{AllowedOrigins: []string{"*"}, AllowCredentials: true, AllowedMethods: []string{"POST", "GET", "DELETE"}})
+	goji.Use(corsHandler.Handler)
 
 	// Routes for API
 	goji.Get("/api", routes.Hello)
