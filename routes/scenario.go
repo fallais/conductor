@@ -86,16 +86,13 @@ func playStep(step shared.Step) error {
 		DstIP:    dstIP.To4(),
 		Version:  4,
 		TTL:      64,
-		Protocol: layers.IPProtocolTCP,
+		Protocol: layers.IPProtocolUDP,
 	}
 
 	// UDP
-	tcp := layers.TCP{
-		SrcPort: layers.TCPPort(50000),
-		DstPort: layers.TCPPort(514),
-		Seq:     1105024978,
-		SYN:     true,
-		Window: 14600,
+	udp := layers.UDP{
+		SrcPort: layers.UDPPort(50000),
+		DstPort: layers.UDPPort(514),
 	}
 
 	// Options
@@ -105,12 +102,12 @@ func playStep(step shared.Step) error {
 	}
 
 	// Checksum
-	tcp.SetNetworkLayerForChecksum(&ip)
+	udp.SetNetworkLayerForChecksum(&ip)
 
 	// Buffer
 	buf := gopacket.NewSerializeBuffer()
 
-	err := gopacket.SerializeLayers(buf, opts, &ip, &tcp)
+	err := gopacket.SerializeLayers(buf, opts, &ip, &udp)
 	if err != nil {
 		return err
 	}
@@ -134,7 +131,7 @@ func playStep(step shared.Step) error {
 	logrus.Infoln(payload)
 
 	tcpPayloadBuf := gopacket.NewSerializeBuffer()
-	err = gopacket.SerializeLayers(tcpPayloadBuf, opts, &tcp, gopacket.Payload([]byte(payload)))
+	err = gopacket.SerializeLayers(tcpPayloadBuf, opts, &udp, gopacket.Payload([]byte(payload)))
 	if err != nil {
 		return err
 	}
@@ -142,7 +139,7 @@ func playStep(step shared.Step) error {
 	// Send the log
 	var packetConn net.PacketConn
 	var rawConn *ipv4.RawConn
-	packetConn, err = net.ListenPacket("ip4:tcp", "0.0.0.0")
+	packetConn, err = net.ListenPacket("ip4:udp", "0.0.0.0")
 	if err != nil {
 		return err
 	}
