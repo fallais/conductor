@@ -122,20 +122,6 @@ func playStep(step shared.Step) error {
 		return err
 	}
 
-	// Prepare the Payload
-	payload := step.Events.Payload
-	for key, value := range step.Events.Values {
-		payload = strings.Replace(payload, fmt.Sprintf("{{%s}}", key), value[rand.Intn(len(value))], -1)
-	}
-
-	logrus.Infoln(payload)
-
-	tcpPayloadBuf := gopacket.NewSerializeBuffer()
-	err = gopacket.SerializeLayers(tcpPayloadBuf, opts, &udp, gopacket.Payload([]byte(payload)))
-	if err != nil {
-		return err
-	}
-
 	// Send the log
 	var packetConn net.PacketConn
 	var rawConn *ipv4.RawConn
@@ -148,8 +134,25 @@ func playStep(step shared.Step) error {
 		return err
 	}
 
-	err = rawConn.WriteTo(ipHeader, tcpPayloadBuf.Bytes(), nil)
-	logrus.Infoln(fmt.Sprintf("packet of length %d sent!\n", (len(tcpPayloadBuf.Bytes()) + len(ipHeaderBuf.Bytes()))))
+	for i := 0; i < step.Events.Nb; i++ {
+		// Prepare the Payload
+		payload := step.Events.Payload
+		for key, value := range step.Events.Values {
+			payload = strings.Replace(payload, fmt.Sprintf("{{%s}}", key), value[rand.Intn(len(value))], -1)
+		}
+		tcpPayloadBuf := gopacket.NewSerializeBuffer()
+		err = gopacket.SerializeLayers(tcpPayloadBuf, opts, &udp, gopacket.Payload([]byte(payload)))
+		if err != nil {
+			return err
+		}
+
+		// Send the log
+		err = rawConn.WriteTo(ipHeader, tcpPayloadBuf.Bytes(), nil)
+		if err != nil {
+			return err
+		}
+		logrus.Infoln(fmt.Sprintf("packet of length %d sent!\n", (len(tcpPayloadBuf.Bytes()) + len(ipHeaderBuf.Bytes()))))
+	}
 
 	return nil
 }
