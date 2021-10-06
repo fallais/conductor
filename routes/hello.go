@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	"orchestrator/utils"
+	"github.com/fallais/conductor/utils"
 )
 
 //------------------------------------------------------------------------------

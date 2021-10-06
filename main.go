@@ -5,14 +5,13 @@ import (
 	"io/ioutil"
 	"time"
 
-	"orchestrator/routes"
-	"orchestrator/shared"
+	"github.com/fallais/conductor/routes"
+	"github.com/fallais/conductor/shared"
 
-	"gopkg.in/yaml.v2"
-
-	"github.com/Sirupsen/logrus"
 	"github.com/rs/cors"
+	"github.com/sirupsen/logrus"
 	"github.com/zenazn/goji"
+	"gopkg.in/yaml.v2"
 )
 
 var configurationFile = flag.String("c", "scenarii.yml", "Specify the location of the configuration file")

@@ -1,2 +1,2 @@
-orchestrator.exe
-orchestrator
+*.exe
+configs/

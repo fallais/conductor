@@ -8,16 +8,14 @@ import (
 	"strconv"
 	"strings"
 
-	"golang.org/x/net/ipv4"
-
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
-
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/zenazn/goji/web"
+	"golang.org/x/net/ipv4"
 
-	"orchestrator/shared"
-	"orchestrator/utils"
+	"github.com/fallais/conductor/shared"
+	"github.com/fallais/conductor/utils"
 )
 
 //------------------------------------------------------------------------------
