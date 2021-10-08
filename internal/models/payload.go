@@ -1,7 +1,8 @@
 package models
 
 import (
-	"github.com/dchest/uniuri"
+	"net"
+
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
@@ -9,27 +10,21 @@ import (
 // Structure
 //------------------------------------------------------------------------------
 
-// Payload is a SOC payload.
-type Payload struct {
-	ID          string `json:"_id" bson:"_id" mapstructure:"_id"`
-	Name        string `json:"name" bson:"name" mapstructure:"name"`
-	Description string `json:"description" bson:"description" mapstructure:"description"`
-	Value       string
+// Message is a log message.
+type Message struct {
+	SourceIP      net.IP
+	DestinationIP net.IP
+	Payload       string
 }
 
 //------------------------------------------------------------------------------
 // Factory
 //------------------------------------------------------------------------------
 
-// NewPayload returns a new Payload.
-func NewPayload(name, description string, value string) (*Payload, error) {
+// NewMessage returns a new Message.
+func NewMessage(name, description string, value string) (*Message, error) {
 	// Create the model
-	model := &Payload{
-		ID:          uniuri.New(),
-		Name:        name,
-		Description: description,
-		Value:       value,
-	}
+	model := &Message{}
 
 	// Validate the model
 	err := model.Validate()
@@ -45,10 +40,8 @@ func NewPayload(name, description string, value string) (*Payload, error) {
 //------------------------------------------------------------------------------
 
 // Validate the model.
-func (model *Payload) Validate() error {
-	return validation.ValidateStruct(model,
-		validation.Field(&model.ID, validation.Required),
-		validation.Field(&model.Name, validation.Required),
-		validation.Field(&model.Value, validation.Required),
-	)
+func (model *Message) Validate() error {
+	return validation.ValidateStruct(model) //validation.Field(&model.ID, validation.Required),
+	//validation.Field(&model.Name, validation.Required),
+
 }

@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/fallais/conductor/internal/play"
+	"github.com/fallais/conductor/internal/cmd/play"
 
 	"github.com/spf13/cobra"
 )
@@ -9,7 +9,7 @@ import (
 var playCmd = &cobra.Command{
 	Use:   "play",
 	Short: "Play the scenario",
-	Run:   play.Select,
+	Run:   play.Run,
 }
 
 func init() {

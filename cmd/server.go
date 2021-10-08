@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/fallais/conductor/internal/server"
+	"github.com/fallais/conductor/internal/cmd/server"
 
 	"github.com/spf13/cobra"
 )

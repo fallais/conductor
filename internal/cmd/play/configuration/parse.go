@@ -1,4 +1,4 @@
-package shared
+package configuration
 
 // Events ...
 type Events struct {
